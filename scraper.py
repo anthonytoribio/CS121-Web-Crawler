@@ -4,7 +4,9 @@ from bs4 import BeautifulSoup
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
-    return [link for link in links if is_valid(link)]
+    validLinks = [link for link in links if is_valid(link)]
+    print(validLinks)
+    return validLinks
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -22,8 +24,10 @@ def extract_next_links(url, resp):
         anchors = soup.find_all('a')
         for a in anchors:
             scrapped_urls.append(a.get('href'))
-        print(scrapped_urls)
+        
         return scrapped_urls
+    else:
+        print(resp.error)
 
 def is_valid(url):
     # Decide whether to crawl this url or not. 
