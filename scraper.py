@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     validLinks = [link for link in links if is_valid(link)]
-    print(validLinks)
+    #print(validLinks)
     return validLinks
 
 def extract_next_links(url, resp):
@@ -18,17 +18,16 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
+    scrapped_urls = []
     if resp.status == 200:
         soup = BeautifulSoup(resp.raw_response.content)
-        scrapped_urls = []
         anchors = soup.find_all('a')
         for a in anchors:
             scrapped_urls.append(a.get('href'))
-        
-        return scrapped_urls
     else:
         print(resp.error)
-
+    return scrapped_urls
+    
 def is_valid(url):
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
