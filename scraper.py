@@ -1,5 +1,6 @@
 import re
 from urllib.parse import urlparse
+from bs4 import BeautifulSoup
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -15,6 +16,9 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
+    #TEST for BS4 to print out html
+    soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
+    print(soup.prettify())
     return list()
 
 def is_valid(url):
@@ -30,6 +34,7 @@ def is_valid(url):
         #CHECKS if the domain is valid
         elif (not parsed.netloc in VALID_DOMAINS):
             return False
+        #TODO: ADD another check if the url is accessbile via the robots.txt file
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
