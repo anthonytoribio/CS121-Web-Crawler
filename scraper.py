@@ -16,17 +16,14 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    if (resp.status == 200):
+    if resp.status == 200:
         soup = BeautifulSoup(resp.raw_response.content)
         scrapped_urls = []
         anchors = soup.find_all('a')
         for a in anchors:
-            scrapped_urls.append(a.get('href'))
+            scrapped_urls.append('href')
         print(scrapped_urls)
         return scrapped_urls
-
-
-    return list()
 
 def is_valid(url):
     # Decide whether to crawl this url or not. 
@@ -41,6 +38,7 @@ def is_valid(url):
         #CHECKS if the domain is valid
         elif (not parsed.netloc in VALID_DOMAINS):
             return False
+        #TODO: ADD another check if the url is accessbile via the robots.txt file
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
