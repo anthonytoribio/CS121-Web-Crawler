@@ -21,7 +21,7 @@ def extract_next_links(url, resp):
         scrapped_urls = []
         anchors = soup.find_all('a')
         for a in anchors:
-            scrapped_urls.append('href')
+            scrapped_urls.append(a.get('href'))
         print(scrapped_urls)
         return scrapped_urls
 
