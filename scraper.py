@@ -1,6 +1,13 @@
 import re
 from urllib.parse import urlparse
+from urllib import robotparser
 from bs4 import BeautifulSoup
+
+#Create a global robotparser that is used in is_valid
+robotParser = robotparser.RobotFileParser()
+
+VALID_DOMAINS = {"www.ics.uci.edu", "www.cs.uci.edu", "www.informatics.uci.edu",
+    "www.stat.uci.edu"}
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -19,7 +26,7 @@ def extract_next_links(url, resp):
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     scrapped_urls = []
-    if resp.status == 200:
+    if resp.status == 200 and resp.raw_response != None:
         soup = BeautifulSoup(resp.raw_response.content)
         anchors = soup.find_all('a')
         for a in anchors:
@@ -32,16 +39,22 @@ def is_valid(url):
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
-    VALID_DOMAINS = {"www.ics.uci.edu", "www.cs.uci.edu", "www.informatics.uci.edu",
-        "www.stat.uci.edu"}
     try:
         parsed = urlparse(url)
+        #Set the url for the robot parser
+        robotParser.set_url(parsed.scheme+"://"+parsed.netloc+"/robots.txt")
         if parsed.scheme not in set(["http", "https"]):
             return False
         #CHECKS if the domain is valid
         elif (not parsed.netloc in VALID_DOMAINS):
             return False
-        #TODO: ADD another check if the url is accessbile via the robots.txt file
+        #Checks the url is legal to be parsed by the robots.txt
+        #possible error: parsed is not the correct url
+        elif (not robotParser.can_fetch("*", url)):
+            print("UNABLE to parse because of robots.txt")
+            print("URL AT:", url)
+
+            return False
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
