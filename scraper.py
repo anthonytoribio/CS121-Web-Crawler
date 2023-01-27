@@ -6,6 +6,9 @@ from bs4 import BeautifulSoup
 #Create a global robotparser that is used in is_valid
 robotParser = robotparser.RobotFileParser()
 
+VALID_DOMAINS = {"www.ics.uci.edu", "www.cs.uci.edu", "www.informatics.uci.edu",
+    "www.stat.uci.edu"}
+
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     validLinks = [link for link in links if is_valid(link)]
@@ -23,7 +26,7 @@ def extract_next_links(url, resp):
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     scrapped_urls = []
-    if resp.status == 200:
+    if resp.status == 200 and resp.raw_response != None:
         soup = BeautifulSoup(resp.raw_response.content)
         anchors = soup.find_all('a')
         for a in anchors:
@@ -36,8 +39,6 @@ def is_valid(url):
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
-    VALID_DOMAINS = {"www.ics.uci.edu", "www.cs.uci.edu", "www.informatics.uci.edu",
-        "www.stat.uci.edu"}
     try:
         parsed = urlparse(url)
         #Set the url for the robot parser
@@ -51,7 +52,6 @@ def is_valid(url):
         #possible error: parsed is not the correct url
         elif (not robotParser.can_fetch("*", parsed)):
             return False
-        #TODO: ADD another check if the url is accessbile via the robots.txt file
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
