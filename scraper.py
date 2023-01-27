@@ -50,7 +50,10 @@ def is_valid(url):
             return False
         #Checks the url is legal to be parsed by the robots.txt
         #possible error: parsed is not the correct url
-        elif (not robotParser.can_fetch("*", parsed)):
+        elif (not robotParser.can_fetch("*", url)):
+            print("UNABLE to parse because of robots.txt")
+            print("URL AT:", url)
+
             return False
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
