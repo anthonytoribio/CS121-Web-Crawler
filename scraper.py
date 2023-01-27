@@ -1,6 +1,10 @@
 import re
 from urllib.parse import urlparse
+from urllib import robotparser
 from bs4 import BeautifulSoup
+
+#Create a global robotparser that is used in is_valid
+robotParser = robotparser.RobotFileParser()
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -36,10 +40,16 @@ def is_valid(url):
         "www.stat.uci.edu"}
     try:
         parsed = urlparse(url)
+        #Set the url for the robot parser
+        robotParser.set_url(parsed.scheme+"://"+parsed.netloc+"/robots.txt")
         if parsed.scheme not in set(["http", "https"]):
             return False
         #CHECKS if the domain is valid
         elif (not parsed.netloc in VALID_DOMAINS):
+            return False
+        #Checks the url is legal to be parsed by the robots.txt
+        #possible error: parsed is not the correct url
+        elif (not robotParser.can_fetch("*", parsed)):
             return False
         #TODO: ADD another check if the url is accessbile via the robots.txt file
         return not re.match(
