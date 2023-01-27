@@ -1,10 +1,11 @@
 from threading import Thread
-
 from inspect import getsource
 from utils.download import download
 from utils import get_logger
 import scraper
 import time
+import os.path
+from my_helper import *
 
 
 class Worker(Thread):
@@ -27,6 +28,7 @@ class Worker(Thread):
             self.logger.info(
                 f"Downloaded {tbd_url}, status <{resp.status}>, "
                 f"using cache {self.config.cache_server}.")
+            write_to_end(os.path.split(os.path.dirname(__file__))[0] + "/Logs/urls.txt", tbd_url)
             scraped_urls = scraper.scraper(tbd_url, resp)
             for scraped_url in scraped_urls:
                 self.frontier.add_url(scraped_url)

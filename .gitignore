@@ -108,3 +108,6 @@ venv.bak/
 
 *.full.py
 *.shelve
+
+# Ignore all text files
+*.txt
