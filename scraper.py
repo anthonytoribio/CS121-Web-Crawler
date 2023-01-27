@@ -43,6 +43,7 @@ def is_valid(url):
         parsed = urlparse(url)
         #Set the url for the robot parser
         robotParser.set_url(parsed.scheme+"://"+parsed.netloc+"/robots.txt")
+        robotParser.read()
         if parsed.scheme not in set(["http", "https"]):
             return False
         #CHECKS if the domain is valid
@@ -53,7 +54,6 @@ def is_valid(url):
         elif (not robotParser.can_fetch("*", url)):
             print("UNABLE to parse because of robots.txt")
             print("URL AT:", url)
-
             return False
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
