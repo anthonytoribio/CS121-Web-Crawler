@@ -2,6 +2,11 @@ import re
 from urllib.parse import urlparse
 from urllib import robotparser
 from bs4 import BeautifulSoup
+from collections import Counter
+from string import punctuation
+from my_helper import *
+import os
+
 
 #Create a global robotparser that is used in is_valid
 robotParser = robotparser.RobotFileParser()
@@ -31,6 +36,11 @@ def extract_next_links(url, resp):
         anchors = soup.find_all('a')
         for a in anchors:
             scrapped_urls.append(a.get('href'))
+
+        page_length = sum([len(string.split()) for string in soup.stripped_strings if string not in punctuation])
+        write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length))
+        #print(page_length)
+
     else:
         print(resp.error)
     return scrapped_urls
