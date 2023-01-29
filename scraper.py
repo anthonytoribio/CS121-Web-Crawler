@@ -11,8 +11,8 @@ import os
 #Create a global robotparser that is used in is_valid
 robotParser = robotparser.RobotFileParser()
 
-VALID_DOMAINS = {"www.ics.uci.edu", "www.cs.uci.edu", "www.informatics.uci.edu",
-    "www.stat.uci.edu"}
+VALID_DOMAINS = {"ics.uci.edu", "cs.uci.edu", "informatics.uci.edu",
+    "stat.uci.edu"}
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -57,7 +57,11 @@ def is_valid(url):
         if parsed.scheme not in set(["http", "https"]):
             return False
         #CHECKS if the domain is valid
-        elif (not parsed.netloc in VALID_DOMAINS):
+        netlocList = parsed.netloc.split(".")
+        if (len(netlocList) < 3):
+            return False
+        domain = netlocList[-3] + "." + netlocList[-2] + "." + netlocList[-1]
+        if (not domain in VALID_DOMAINS):
             return False
         #Checks the url is legal to be parsed by the robots.txt
         #possible error: parsed is not the correct url
