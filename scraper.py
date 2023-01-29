@@ -14,6 +14,8 @@ robotParser = robotparser.RobotFileParser()
 VALID_DOMAINS = {"ics.uci.edu", "cs.uci.edu", "informatics.uci.edu",
     "stat.uci.edu"}
 
+domainDicto = dict()
+
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     validLinks = [link for link in links if is_valid(link)]
@@ -62,7 +64,16 @@ def is_valid(url):
             return False
         domain = netlocList[-3] + "." + netlocList[-2] + "." + netlocList[-1]
         if (not domain in VALID_DOMAINS):
+            print("=========== Invalid Domain ==============")
+            print(url)
             return False
+
+        domainDicto[parsed.netloc] = domainDicto.get(parsed.netloc, 0) + 1
+
+        print("============ Dictionary Updated ============")
+        print(domainDicto)
+
+
         #Checks the url is legal to be parsed by the robots.txt
         #possible error: parsed is not the correct url
         #Read the robots.txt file
