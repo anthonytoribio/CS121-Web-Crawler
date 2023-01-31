@@ -6,6 +6,7 @@ from collections import Counter
 from string import punctuation
 from my_helper import *
 import os
+import json
 from tokenize import tokenize
 
 
@@ -79,10 +80,17 @@ def is_valid(url):
             print(url)
             return False
 
-        domainDicto[parsed.netloc] = domainDicto.get(parsed.netloc, 0) + 1
+        elif domain == 'ics.uci.edu': # Domain is of type ics.uci.edu and is a valid domain
+            trueDomain = parsed.scheme+"://"+parsed.netloc
+            if trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'}: # Domain is subdomain of ics.uci.edu 
 
-        print("============ Dictionary Updated ============")
-        print(domainDicto)
+                domainDicto[parsed.netloc] = domainDicto.get(parsed.netloc, 0) + 1
+
+                print("============ Dictionary Updated ============")
+                print(domainDicto)
+            
+                with open('domain_count.txt', 'w') as domainCountTxt:
+                    domainCountTxt.write(json.dumps(domainDicto))
 
 
         #Checks the url is legal to be parsed by the robots.txt
