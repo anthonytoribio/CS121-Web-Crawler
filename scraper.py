@@ -36,7 +36,9 @@ def extract_next_links(url, resp):
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     scrapped_urls = []
-    if resp.status == 200 and resp.raw_response != None:
+    print(f"\n!-------The page: {url} is size: {len(resp.raw_response.content)} bytes----------!\n")
+    #Only read the page if it has content and it is less than .7 gb
+    if resp.status == 200 and resp.raw_response != None and len(resp.raw_response.content) < 700000000:
         soup = BeautifulSoup(resp.raw_response.content)
         anchors = soup.find_all('a')
         for a in anchors:
