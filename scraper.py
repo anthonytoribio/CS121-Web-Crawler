@@ -6,6 +6,7 @@ from collections import Counter
 from string import punctuation
 from my_helper import *
 import os
+from tokenize import tokenize
 
 
 #Create a global robotparser that is used in is_valid
@@ -13,8 +14,10 @@ robotParser = robotparser.RobotFileParser()
 
 VALID_DOMAINS = {"ics.uci.edu", "cs.uci.edu", "informatics.uci.edu",
     "stat.uci.edu"}
+PAGE_COPY_PATH = r"./text_copy.txt"
 
 domainDicto = dict()
+wordFreq = Counter()
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -42,6 +45,13 @@ def extract_next_links(url, resp):
         page_length = sum([len(string.split()) for string in soup.stripped_strings if string not in punctuation])
         write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length))
         #print(page_length)
+
+        # Copying current webpage to local txt and tokenize/update wordFreq
+        copy_page(PAGE_COPY_PATH, [string for string in soup.stripped_strings])
+        file = open(PAGE_COPY_PATH, "rb")
+        token_list = [token[1] for token in tokenize(file.readline) if token[0] == 1]
+        wordFreq.update(Counter(computeWordFrequencies(token_list)))
+
 
     else:
         print(resp.error)
