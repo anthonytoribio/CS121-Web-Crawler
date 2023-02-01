@@ -125,3 +125,7 @@ def computeWordFrequencies(tokens: '[str]') -> "dict(str, int)":
 def save_file(file_name : str , object):
     with open(file_name, 'w') as file:
         file.write(json.dumps(object))
+
+def load_file(file_name : str):
+    with open(file_name, 'r') as file:
+        return json.loads(file.read())

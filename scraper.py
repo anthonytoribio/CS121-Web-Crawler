@@ -54,8 +54,10 @@ def extract_next_links(url, resp):
         file = open(PAGE_COPY_PATH, "rb")
         #token_list = [token[1] for token in tokenize(file.readline) if (token[0] == 1 or token[0] == 2)]
         token_list = tokenize(PAGE_COPY_PATH)
+        if len(wordFreq) == 0 and os.path.exists('wordFreq.json'):
+            wordFreq = load_file('wordFreq.json')
         wordFreq.update(Counter(computeWordFrequencies(token_list)))
-        save_file('wordFreq.txt', wordFreq)
+        save_file('wordFreq.json', wordFreq)
 
 
     else:
@@ -92,12 +94,13 @@ def is_valid(url):
         elif domain == 'ics.uci.edu': # Domain is of type ics.uci.edu and is a valid domain
             trueDomain = parsed.scheme+"://"+parsed.netloc
             if trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'}: # Domain is subdomain of ics.uci.edu 
-
+                if len(domainDicto) == 0 and os.path.exists('domain_count.json'):
+                    domainDicto = load_file('domain_count.json')
                 domainDicto[parsed.netloc] = domainDicto.get(parsed.netloc, 0) + 1
 
                 print("============ Dictionary Updated ============")
                 print(domainDicto)
-                save_file('domain_count.txt', domainDicto)
+                save_file('domain_count.json', domainDicto)
 
 
         #Checks the url is legal to be parsed by the robots.txt
