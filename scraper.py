@@ -52,7 +52,7 @@ def extract_next_links(url, resp):
         # Copying current webpage to local txt and tokenize/update wordFreq
         copy_page(PAGE_COPY_PATH, [string for string in soup.stripped_strings])
         file = open(PAGE_COPY_PATH, "rb")
-        token_list = [token[1] for token in tokenize(file.readline) if token[0] == 1]
+        token_list = [token[1] for token in tokenize(file.readline) if (token[0] == 1 or token[0] == 2)]
         wordFreq.update(Counter(computeWordFrequencies(token_list)))
 
 

@@ -8,7 +8,11 @@ def write_to_end(file_name, url):
 def copy_page(file_name : str, lines : list):
     file = open(file_name, "w", encoding="utf-8")
     for line in lines:
-        file.write(line)
+        for char in line:
+            if char.isalnum():
+                file.write(char)
+            elif char.isspace():
+                file.write(char)
         file.write("\n")
     file.close()
 
