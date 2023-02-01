@@ -70,10 +70,6 @@ def is_valid(url):
         parsed = urlparse(url)
         #Set the url for the robot parser
 
-        # Our url has a fragment so we don't want to crawl it
-        if parsed.fragment:
-            return False
-
         if parsed.scheme not in set(["http", "https"]):
             return False
 
