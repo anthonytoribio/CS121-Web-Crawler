@@ -1,4 +1,4 @@
-
+import json
 def write_to_end(file_name, url):   
     file = open(file_name, 'a+')
     file.write(url + "\n")
@@ -121,3 +121,7 @@ def computeWordFrequencies(tokens: '[str]') -> "dict(str, int)":
             counts[token] = 1
     
     return counts
+
+def save_file(file_name : str , object):
+    with open(file_name, 'w') as file:
+        file.write(json.dumps(object))

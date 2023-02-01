@@ -55,6 +55,7 @@ def extract_next_links(url, resp):
         #token_list = [token[1] for token in tokenize(file.readline) if (token[0] == 1 or token[0] == 2)]
         token_list = tokenize(PAGE_COPY_PATH)
         wordFreq.update(Counter(computeWordFrequencies(token_list)))
+        save_file('wordFreq.txt', wordFreq)
 
 
     else:
@@ -96,9 +97,7 @@ def is_valid(url):
 
                 print("============ Dictionary Updated ============")
                 print(domainDicto)
-            
-                with open('domain_count.txt', 'w') as domainCountTxt:
-                    domainCountTxt.write(json.dumps(domainDicto))
+                save_file('domain_count.txt', domainDicto)
 
 
         #Checks the url is legal to be parsed by the robots.txt
