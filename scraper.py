@@ -69,13 +69,20 @@ def is_valid(url):
         parsed = urlparse(url)
         #Set the url for the robot parser
 
+        # Our url has a fragment so we don't want to crawl it
+        if parsed.fragment:
+            return False
+
         if parsed.scheme not in set(["http", "https"]):
             return False
+
         #CHECKS if the domain is valid
         netlocList = parsed.netloc.split(".")
         if (len(netlocList) < 3):
             return False
+
         domain = netlocList[-3] + "." + netlocList[-2] + "." + netlocList[-1]
+        
         if (not domain in VALID_DOMAINS):
             print("=========== Invalid Domain ==============")
             print(url)
