@@ -46,7 +46,7 @@ def extract_next_links(url, resp):
             scrapped_urls.append(a.get('href'))
 
         page_length = sum([len(string.split()) for string in soup.stripped_strings if string not in punctuation])
-        write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length))
+        write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length) + " "+ url )
         #print(page_length)
 
         # Copying current webpage to local txt and tokenize/update wordFreq
