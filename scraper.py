@@ -7,7 +7,7 @@ from string import punctuation
 from my_helper import *
 import os
 import json
-from tokenize import tokenize
+#from tokenize import tokenize
 
 
 #Create a global robotparser that is used in is_valid
