@@ -6,7 +6,7 @@ def write_to_end(file_name, url):
     
 
 def copy_page(file_name : str, lines : list):
-    file = open(file_name, "w")
+    file = open(file_name, "w", encoding="utf-8")
     for line in lines:
         file.write(line)
         file.write("\n")
