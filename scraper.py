@@ -23,8 +23,8 @@ wordFreq = Counter()
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     validLinks = [link for link in links if is_valid(link)]
-    #print(validLinks)
-    return validLinks
+    defraggedLinks = [link.split('#', 1)[0] for link in validLinks]
+    return defraggedLinks
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -93,11 +93,18 @@ def is_valid(url):
             trueDomain = parsed.scheme+"://"+parsed.netloc
             if trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'}: # Domain is subdomain of ics.uci.edu 
 
+                with open('domain_count.txt', 'r') as domainCountTxt:
+                    data = domainCountTxt.read()
+                
+                domainDicto = json.loads(data)
+                    
                 domainDicto[parsed.netloc] = domainDicto.get(parsed.netloc, 0) + 1
 
                 print("============ Dictionary Updated ============")
                 print(domainDicto)
-                save_file('domain_count.txt', domainDicto)
+            
+                with open('domain_count.txt', 'w') as domainCountTxt:
+                    domainCountTxt.write(json.dumps(domainDicto))
 
 
         #Checks the url is legal to be parsed by the robots.txt
