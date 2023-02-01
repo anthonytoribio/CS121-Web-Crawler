@@ -23,8 +23,8 @@ wordFreq = Counter()
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     validLinks = [link for link in links if is_valid(link)]
-    #print(validLinks)
-    return validLinks
+    defraggedLinks = [link.split('#', 1)[0] for link in validLinks]
+    return defraggedLinks
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -71,10 +71,6 @@ def is_valid(url):
     try:
         parsed = urlparse(url)
         #Set the url for the robot parser
-
-        # Our url has a fragment so we don't want to crawl it
-        if parsed.fragment:
-            return False
 
         if parsed.scheme not in set(["http", "https"]):
             return False

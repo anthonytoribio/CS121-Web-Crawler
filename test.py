@@ -1,8 +1,7 @@
-from bs4 import BeautifulSoup
+validLinks = ['h:/hobo.ics.uci.edu/talk', 'h:hobo.ics.uci.edu/talk#123', 'h:hobo.ics.uci.edu/talk#dfasbnfmsdbfnmc']
 
-with open("index.html") as fp:
-    soup = BeautifulSoup(fp, "html.parser")
-    print(soup.text)
-    textList = soup.text.replace("\n", " ").split()
-    print(textList)
-    print(len(textList))
+
+
+defraggedLinks = [link.split('#', 1)[0] for link in validLinks]
+
+print(defraggedLinks)
