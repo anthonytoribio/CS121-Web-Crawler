@@ -1,14 +1,12 @@
 import json
+from my_helper import *
 
-with open('domain_count.txt', 'r') as domainCountTxt:
-    data = domainCountTxt.read()
+domainCounts = load_file('subDomains.json')
 
-dicto = json.loads(data)
-
-sortedDicto = {key: val for key, val in sorted(dicto.items())}
+sortedDicto = {key: val for key, val in sorted(domainCounts.items())}
 
 f = open("Deliverable4.txt", "w")
 f.write(f'There were {len(sortedDicto.keys())} subdomains found in the ics.uci.edu domain\n')
 for k, v in sortedDicto.items():
-    f.write(f'{k}, {v}\n')
+    f.write(f'{k}, {v["count"]}\n')
 f.close()

@@ -7,6 +7,7 @@ from string import punctuation
 from my_helper import *
 import os
 import json
+import pickle
 #from tokenize import tokenize
 
 
@@ -17,13 +18,54 @@ VALID_DOMAINS = {"ics.uci.edu", "cs.uci.edu", "informatics.uci.edu",
     "stat.uci.edu"}
 PAGE_COPY_PATH = r"./text_copy.txt"
 
-domainDicto = dict()
+
 wordFreq = Counter()
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     validLinks = [link for link in links if is_valid(link)]
     defraggedLinks = [link.split('#', 1)[0] for link in validLinks]
+
+    # IMPORTANT : Delete subDomains.json when starting a new crawl if you want accurate subdomain counts
+    for url in defraggedLinks:
+        parsed = urlparse(url)
+        netlocList = parsed.netloc.split(".")
+
+        domain = netlocList[-3] + "." + netlocList[-2] + "." + netlocList[-1]
+        trueDomain = parsed.scheme+"://"+parsed.netloc
+        
+        # Subdomain is of ics.uci.edu but it isn't the base url of ics.uci.edu
+        if domain == 'ics.uci.edu' and trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'}:
+
+            # Debug prints
+            print("======== Valid Subdomain Found ========")
+            print(url)
+            print()
+
+            if os.path.exists('subDomains.json'):
+                
+                domainDict = load_file('subDomains.json')
+
+                if parsed.netloc in domainDict:
+                    if url not in domainDict[parsed.netloc]['urls']:
+                        domainDict[parsed.netloc]['urls'].append(url)
+                        domainDict[parsed.netloc]['count'] += 1
+                else:
+                    domainDict[parsed.netloc] = {'count': 1, 'urls': [url]}
+                
+                save_file('subDomains.json', domainDict)
+
+            else:
+                domainDict = dict()
+                domainDict[parsed.netloc] = {'count': 1, 'urls': [url]}    
+                save_file('subDomains.json', domainDict)
+            
+            # Debug prints
+            print("=========== Dictionary Updated ==============")
+            for k,v in domainDict.items():
+                print(k, v)
+            print()
+
     return defraggedLinks
 
 def extract_next_links(url, resp):
@@ -54,11 +96,12 @@ def extract_next_links(url, resp):
         file = open(PAGE_COPY_PATH, "rb")
         #token_list = [token[1] for token in tokenize(file.readline) if (token[0] == 1 or token[0] == 2)]
         token_list = tokenize(PAGE_COPY_PATH)
+
+        global wordFreq
         if len(wordFreq) == 0 and os.path.exists('wordFreq.json'):
             wordFreq = load_file('wordFreq.json')
         wordFreq.update(Counter(computeWordFrequencies(token_list)))
         save_file('wordFreq.json', wordFreq)
-
 
     else:
         print(resp.error)
@@ -83,20 +126,22 @@ def is_valid(url):
         domain = netlocList[-3] + "." + netlocList[-2] + "." + netlocList[-1]
         
         if (not domain in VALID_DOMAINS):
-            print("=========== Invalid Domain ==============")
-            print(url)
+            # print("=========== Invalid Domain ==============")
+            # print(url)
             return False
 
-        elif domain == 'ics.uci.edu': # Domain is of type ics.uci.edu and is a valid domain
-            trueDomain = parsed.scheme+"://"+parsed.netloc
-            if trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'}: # Domain is subdomain of ics.uci.edu 
-                if len(domainDicto) == 0 and os.path.exists('domain_count.json'):
-                    domainDicto = load_file('domain_count.json')
-                domainDicto[parsed.netloc] = domainDicto.get(parsed.netloc, 0) + 1
+        # elif domain == 'ics.uci.edu': # Domain is of type ics.uci.edu and is a valid domain
+        #     trueDomain = parsed.scheme+"://"+parsed.netloc
+        #     if trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'}: # Domain is subdomain of ics.uci.edu 
+                
+        #         global domainDicto
+        #         if len(domainDicto) == 0 and os.path.exists('domain_count.json'):
+        #             domainDicto = load_file('domain_count.json')
+        #         domainDicto[parsed.netloc] = domainDicto.get(parsed.netloc, 0) + 1
 
-                print("============ Dictionary Updated ============")
-                print(domainDicto)
-                save_file('domain_count.json', domainDicto)
+        #         print("============ Dictionary Updated ============")
+        #         print(domainDicto)
+        #         save_file('domain_count.json', domainDicto)
 
 
         #Checks the url is legal to be parsed by the robots.txt
