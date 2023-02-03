@@ -154,3 +154,15 @@ def isDate(date: str) -> bool:
         except ValueError:
             pass
     return False
+
+
+
+def calculate_longest_page(filepath):
+    longest_length = 0
+    with open(filepath, "r") as file:
+        for line in file:
+            content = line.split(" ")
+            longest_length = max(longest_length, int(content[0]))
+    return longest_length
+            
+            
