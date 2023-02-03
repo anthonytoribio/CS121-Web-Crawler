@@ -2,6 +2,8 @@ import json
 import datetime as dt
 from string import punctuation
 import os
+import statistics
+
 
 stop_words = {'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and',
               'any', 'are', "aren't", 'as', 'at', 'be', 'because', 'been', 'before', 'being',
@@ -175,6 +177,14 @@ def calculate_longest_page(filepath):
     return longest_length
             
             
+def calcualte_median_page_length(filepath):
+    urls_length = []
+    with open(filepath, "r") as file:
+        for line in file:
+            content = line.split(" ")
+            urls_length.append(int(content[0]))
+    print(statistics.median(urls_length))
+
 
 def high_info(soup, resp) -> bool: # checks if page has high info or not
     # _bytes = len(resp.raw_response.content)

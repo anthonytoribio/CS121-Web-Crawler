@@ -1,2 +1,2 @@
-import os
-print(os.path.dirname(__file__) + "/crawler/Logs/page_length.txt")
+from my_helper import *
+calcualte_median_page_length("Logs/page_length.txt")
