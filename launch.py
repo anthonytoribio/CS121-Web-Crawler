@@ -19,8 +19,8 @@ def main(config_file, restart):
             os.remove(os.path.dirname(__file__) + "subDomains.json")
         if os.path.isfile(os.path.dirname(__file__) + "wordFreq.json"):
             os.remove(os.path.dirname(__file__) + ".json")
-        open("/Logs/urls.txt", "w").close()
-        open("/Logs/page_length.txt", "w").close()
+        open( os.path.dirname(__file__) + "/Logs/urls.txt", "w").close()
+        open(os.path.dirname(__file__) + "/Logs/page_length.txt", "w").close()
 
     crawler.start()
 
