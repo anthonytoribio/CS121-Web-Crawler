@@ -157,6 +157,18 @@ def isDate(date: str) -> bool:
             pass
     return False
 
+
+
+def calculate_longest_page(filepath):
+    longest_length = 0
+    with open(filepath, "r") as file:
+        for line in file:
+            content = line.split(" ")
+            longest_length = max(longest_length, int(content[0]))
+    return longest_length
+            
+            
+
 def high_info(soup, resp) -> bool: # checks if page has high info or not
     # _bytes = len(resp.raw_response.content)
     # page_size = os.stat('text_copy.txt')

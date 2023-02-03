@@ -99,9 +99,21 @@ def extract_next_links(url, resp):
         if not high_info(soup, resp):
             return scrapped_urls
 
+
         anchors = soup.find_all('a')
+        #parse the url to get the scheme and domain for later use
+        parse = urlparse(url)
+        #for each anchor check if its a relative url and if so change to absolute
         for a in anchors:
-            scrapped_urls.append(a.get('href'))
+            hrefLink = a.get('href')
+
+            if hrefLink != None and len(hrefLink) > 2:
+                if (hrefLink[:2] == "//"):
+                    scrapped_urls.append("https:" + hrefLink)
+                elif (hrefLink[0] == "/"):
+                    scrapped_urls.append(parse.scheme + "://" + parse.netloc + hrefLink)
+            else:
+                scrapped_urls.append(a.get('href'))
 
         page_length = sum([len(string.split()) for string in soup.stripped_strings if string not in punctuation])
         write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length) + " "+ url )
