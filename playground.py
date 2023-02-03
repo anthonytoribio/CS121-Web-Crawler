@@ -1,2 +1,2 @@
 from my_helper import *
-calcualte_median_page_length("Logs/page_length.txt")
+calculate_given_quantile("Logs/page_length.txt", 25)
