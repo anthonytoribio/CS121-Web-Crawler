@@ -95,7 +95,6 @@ def extract_next_links(url, resp):
         soup = BeautifulSoup(resp.raw_response.content)
 
         page_length = sum([len(string.split()) for string in soup.stripped_strings if string not in punctuation])
-        print([(string.split()) for string in soup.stripped_strings if string not in punctuation])
         write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length) + " "+ url )
         #print(page_length)
 
