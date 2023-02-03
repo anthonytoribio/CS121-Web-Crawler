@@ -1,2 +1,2 @@
-import os
-print(os.path.dirname(__file__) + "/crawler/Logs/page_length.txt")
+from my_helper import *
+calculate_given_quantile("Logs/page_length.txt", 25)

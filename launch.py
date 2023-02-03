@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from utils.server_registration import get_cache_server
 from utils.config import Config
 from crawler import Crawler
+import os
 
 
 def main(config_file, restart):
@@ -14,8 +15,10 @@ def main(config_file, restart):
     crawler = Crawler(config, restart)
     if restart:
         #delete wordFreq.json & subDomains.json & url.txt
-        open("subDomains.json", "w").close()
-        open("wordFreq.json", "w").close()
+        if os.path.isfile(os.path.dirname(__file__) + "subDomains.json"):
+            os.remove(os.path.dirname(__file__) + "subDomains.json")
+        if os.path.isfile(os.path.dirname(__file__) + "wordFreq.json"):
+            os.remove(os.path.dirname(__file__) + ".json")
         open("/Logs/urls.txt", "w").close()
         open("/Logs/page_length.txt", "w").close()
 

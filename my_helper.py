@@ -2,6 +2,10 @@ import json
 import datetime as dt
 from string import punctuation
 import os
+import statistics
+import numpy as np
+
+
 
 stop_words = {'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and',
               'any', 'are', "aren't", 'as', 'at', 'be', 'because', 'been', 'before', 'being',
@@ -175,7 +179,24 @@ def calculate_longest_page(filepath):
     return longest_length
             
             
+def calcualte_median_page_length(filepath):
+    urls_length = []
+    with open(filepath, "r") as file:
+        for line in file:
+            content = line.split(" ")
+            urls_length.append(int(content[0]))
+    print(statistics.median(urls_length))
 
+def calculate_given_quantile(filepath, quantile):
+    urls_length = []
+    with open(filepath, "r") as file:
+        for line in file:
+            content = line.split(" ")
+            urls_length.append(int(content[0]))
+    percentile = np.percentile(urls_length, quantile)
+    print(percentile)
+    
+    
 def high_info(soup, resp) -> bool: # checks if page has high info or not
     page_size = len(soup.prettify())
     body = soup.body
