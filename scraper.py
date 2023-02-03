@@ -47,11 +47,6 @@ def scraper(url, resp):
         # Subdomain is of ics.uci.edu but it isn't the base url of ics.uci.edu
         if domain == 'ics.uci.edu' and trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'}:
 
-            # Debug prints
-            print("======== Valid Subdomain Found ========")
-            print(url)
-            print()
-
             if os.path.exists('subDomains.json'):
                 
                 domainDict = load_file('subDomains.json')
@@ -60,22 +55,38 @@ def scraper(url, resp):
                     if url not in domainDict[parsed.netloc]['urls']:
                         domainDict[parsed.netloc]['urls'].append(url)
                         domainDict[parsed.netloc]['count'] += 1
+
+                        # Debug prints
+                        print("=========== Dictionary Updated ==============")
+                        for k,v in domainDict.items():
+                            print(k, v)
+                            print()
+                        save_file('subDomains.json', domainDict)
+                        
                 else:
                     domainDict[parsed.netloc] = {'count': 1, 'urls': [url]}
+                    
+                    # Debug prints
+                    print("=========== Dictionary Updated ==============")
+                    for k,v in domainDict.items():
+                        print(k, v)
+                        print()
+                    save_file('subDomains.json', domainDict)
                 
-                save_file('subDomains.json', domainDict)
+
+                
 
             else:
                 domainDict = dict()
                 domainDict[parsed.netloc] = {'count': 1, 'urls': [url]}    
+
+                # Debug prints
+                print("=========== subDomains.json created with a dictionary with 1 entry ==============")
+                for k,v in domainDict.items():
+                    print(k, v)
+                    print()
                 save_file('subDomains.json', domainDict)
             
-            # Debug prints
-            print("=========== Dictionary Updated ==============")
-            for k,v in domainDict.items():
-                print(k, v)
-            print()
-
     return finalLinks
 
 def extract_next_links(url, resp):
