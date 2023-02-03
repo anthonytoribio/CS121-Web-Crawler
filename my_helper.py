@@ -177,12 +177,9 @@ def calculate_longest_page(filepath):
             
 
 def high_info(soup, resp) -> bool: # checks if page has high info or not
-    # _bytes = len(resp.raw_response.content)
-    # page_size = os.stat('text_copy.txt')
-    # page_size = page_size.st_size
     page_size = len(soup.prettify())
-    x = soup.body
-    s = ''.join([string for string in x.stripped_strings])
-    print((len(s) / page_size) * 100)
-    #return (page_length / _bytes) > .8
-    return True
+    body = soup.body
+    body = ''.join([string for string in body.stripped_strings])
+    ratio = (len(body) / page_size) * 100
+    print(ratio)
+    return ratio > 7
