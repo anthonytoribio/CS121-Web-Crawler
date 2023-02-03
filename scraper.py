@@ -6,9 +6,7 @@ from collections import Counter
 from string import punctuation
 from my_helper import *
 import os
-import json
-import pickle
-#from tokenize import tokenize
+
 
 
 #Create a global robotparser that is used in is_valid
@@ -25,11 +23,23 @@ def scraper(url, resp):
     links = extract_next_links(url, resp)
     validLinks = [link for link in links if is_valid(link)]
     defraggedLinks = [link.split('#', 1)[0] for link in validLinks]
+    finalLinks = []
 
     # IMPORTANT : Delete subDomains.json when starting a new crawl if you want accurate subdomain counts
     for url in defraggedLinks:
         parsed = urlparse(url)
         netlocList = parsed.netloc.split(".")
+
+        #loop through the path and check if any is a date. If it is then dont add to finalLinks
+        hasDate = False
+        urlPath = parsed.path.split("/")
+        for pathSplit in urlPath:
+            if (isDate(pathSplit)):
+                hasDate = True
+                break
+        if (not hasDate):
+            finalLinks.append(url)
+
 
         domain = netlocList[-3] + "." + netlocList[-2] + "." + netlocList[-1]
         trueDomain = parsed.scheme+"://"+parsed.netloc
@@ -66,7 +76,7 @@ def scraper(url, resp):
                 print(k, v)
             print()
 
-    return defraggedLinks
+    return finalLinks
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -114,7 +124,6 @@ def is_valid(url):
     # There are already some conditions that return False.
     try:
         parsed = urlparse(url)
-        #Set the url for the robot parser
 
         if parsed.scheme not in set(["http", "https"]):
             return False
@@ -127,26 +136,9 @@ def is_valid(url):
         domain = netlocList[-3] + "." + netlocList[-2] + "." + netlocList[-1]
         
         if (not domain in VALID_DOMAINS):
-            # print("=========== Invalid Domain ==============")
-            # print(url)
             return False
 
-        # elif domain == 'ics.uci.edu': # Domain is of type ics.uci.edu and is a valid domain
-        #     trueDomain = parsed.scheme+"://"+parsed.netloc
-        #     if trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'}: # Domain is subdomain of ics.uci.edu 
-                
-        #         global domainDicto
-        #         if len(domainDicto) == 0 and os.path.exists('domain_count.json'):
-        #             domainDicto = load_file('domain_count.json')
-        #         domainDicto[parsed.netloc] = domainDicto.get(parsed.netloc, 0) + 1
-
-        #         print("============ Dictionary Updated ============")
-        #         print(domainDicto)
-        #         save_file('domain_count.json', domainDicto)
-
-
         #Checks the url is legal to be parsed by the robots.txt
-        #possible error: parsed is not the correct url
         #set the url of the robots.txt and then read 
         robotParser.set_url(parsed.scheme+"://"+domain+"/robots.txt")
         robotParser.read()

@@ -1,4 +1,6 @@
 import json
+import datetime as dt
+
 stop_words = {'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and',
               'any', 'are', "aren't", 'as', 'at', 'be', 'because', 'been', 'before', 'being',
               'below', 'between', 'both', 'but', 'by', 'can', "can't", 'cannot', 'com', 'could',
@@ -17,6 +19,14 @@ stop_words = {'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', '
               'who', "who's", 'whom', 'why', "why's", 'with', "won't", 'would', "wouldn't", 'you',
               "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves'}
 
+ALPHANUMERIC = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+    "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1",
+    "2", "3", "4", "5", "6", "7", "8", "9", "0"}
+
+#formats for dates that we want to avoid
+FMTS = ("%Y-%m-%d", "%Y-%m")
+
+
 def write_to_end(file_name, url):   
     file = open(file_name, 'a+')
     file.write(url + "\n")
@@ -34,21 +44,6 @@ def copy_page(file_name : str, lines : list):
         file.write("\n")
     file.close()
 
-# def computeWordFrequencies(token_list):
-#     token_dict = {}
-#     for token in token_list:
-#         if token.lower() in token_dict: # Adding tokens into a map
-#             token_dict[token.lower()] += 1
-#         else:
-#             token_dict[token.lower()] = 1
-#     return token_dict
-
-
-import sys
-
-ALPHANUMERIC = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-    "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1",
-    "2", "3", "4", "5", "6", "7", "8", "9", "0"}
 
 #BELOW LET n = the total amount of any characters inside a file. 
 
@@ -149,3 +144,13 @@ def save_file(file_name : str , object):
 def load_file(file_name : str):
     with open(file_name, 'r') as file:
         return json.loads(file.read())
+
+def isDate(date: str) -> bool:
+    #check each format in FMTS if it 'fits' the given date
+    for fmt in FMTS:
+        try:
+            dt.datetime.strptime(date, fmt)
+            return True
+        except ValueError:
+            pass
+    return False
