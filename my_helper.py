@@ -1,4 +1,22 @@
 import json
+stop_words = {'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and',
+              'any', 'are', "aren't", 'as', 'at', 'be', 'because', 'been', 'before', 'being',
+              'below', 'between', 'both', 'but', 'by', 'can', "can't", 'cannot', 'com', 'could',
+              "couldn't", 'did', "didn't", 'do', 'does', "doesn't", 'doing', "don't", 'down', 'during',
+              'each', 'else', 'ever', 'few', 'for', 'from', 'further', 'get', 'had', "hadn't", 'has',
+              "hasn't", 'have', "haven't", 'having', 'he', 'her', 'here', "here's", 'hers', 'herself',
+              'him', 'himself', 'his', 'how', "how's", 'i', "i'm", 'if', 'in', 'into', 'is', "isn't",
+              'it', "it's", 'its', 'itself', "let's", 'me', 'more', 'most', "mustn't", 'my', 'myself',
+              'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'ought', 'our',
+              'ours', 'ourselves', 'out', 'over', 'own', 'same', "shan't", 'she', "she'd", "she'll",
+              "she's", 'should', "shouldn't", 'so', 'some', 'such', 'than', 'that', "that's", 'the',
+              'their', 'theirs', 'them', 'themselves', 'then', 'there', "there's", 'these', 'they',
+              "they'd", "they'll", "they're", "they've", 'this', 'those', 'through', 'to', 'too', 'under',
+              'until', 'up', 'very', 'was', "wasn't", 'we', "we'd", "we'll", "we're", "we've", 'were',
+              "weren't", 'what', "what's", 'when', "when's", 'where', "where's", 'which', 'while',
+              'who', "who's", 'whom', 'why', "why's", 'with', "won't", 'would', "wouldn't", 'you',
+              "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves'}
+
 def write_to_end(file_name, url):   
     file = open(file_name, 'a+')
     file.write(url + "\n")
@@ -115,7 +133,9 @@ def computeWordFrequencies(tokens: '[str]') -> "dict(str, int)":
     # Imagine we had a file with only the following string inside of it: "a a a a a".
     # From this example n = 9 and we could at most have 5 tokens, following our definition of a token.
     for token in tokens:
-        if token in counts:
+        if token in stop_words:
+            continue
+        elif token in counts:
             counts[token] += 1
         else:
             counts[token] = 1

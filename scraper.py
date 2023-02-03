@@ -97,6 +97,7 @@ def extract_next_links(url, resp):
         #token_list = [token[1] for token in tokenize(file.readline) if (token[0] == 1 or token[0] == 2)]
         token_list = tokenize(PAGE_COPY_PATH)
 
+        # IMPORTANT: Delete wordFreq.json when starting from the beginning for accurate tracking
         global wordFreq
         if len(wordFreq) == 0 and os.path.exists('wordFreq.json'):
             wordFreq = load_file('wordFreq.json')
