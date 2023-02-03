@@ -16,9 +16,16 @@ def main(config_file, restart):
     if restart:
         #delete wordFreq.json & subDomains.json & url.txt
         if os.path.isfile(os.path.dirname(__file__) + "subDomains.json"):
+            print("-------DELETING  subDomains.json")
             os.remove(os.path.dirname(__file__) + "subDomains.json")
+        else:
+            print("----Did not find subdomains.json---")
+        
         if os.path.isfile(os.path.dirname(__file__) + "wordFreq.json"):
+            print("-------DELETING  wordFreq.json")
             os.remove(os.path.dirname(__file__) + ".json")
+        else:
+            print("----Did not find wordFreq.json---")
         open( os.path.dirname(__file__) + "/Logs/urls.txt", "w").close()
         open(os.path.dirname(__file__) + "/Logs/page_length.txt", "w").close()
 
