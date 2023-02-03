@@ -1,5 +1,7 @@
 import json
 import datetime as dt
+from string import punctuation
+import os
 
 stop_words = {'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and',
               'any', 'are', "aren't", 'as', 'at', 'be', 'because', 'been', 'before', 'being',
@@ -145,6 +147,13 @@ def load_file(file_name : str):
     with open(file_name, 'r') as file:
         return json.loads(file.read())
 
+def get_lines(file_name : str):
+    l = []
+    with open('text_copy.txt', 'r') as f:
+        for line in f:
+            l.append(line.strip())
+    return l
+
 def isDate(date: str) -> bool:
     #check each format in FMTS if it 'fits' the given date
     for fmt in FMTS:
@@ -166,3 +175,14 @@ def calculate_longest_page(filepath):
     return longest_length
             
             
+
+def high_info(soup, resp) -> bool: # checks if page has high info or not
+    # _bytes = len(resp.raw_response.content)
+    # page_size = os.stat('text_copy.txt')
+    # page_size = page_size.st_size
+    page_size = len(soup.prettify())
+    x = soup.body
+    s = ''.join([string for string in x.stripped_strings])
+    print((len(s) / page_size) * 100)
+    #return (page_length / _bytes) > .8
+    return True

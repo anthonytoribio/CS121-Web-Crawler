@@ -1,2 +1,2 @@
-from my_helper import *
-print(calculate_longest_page("Logs/page_length.txt"))
+import os
+print(os.path.dirname(__file__) + "/crawler/Logs/page_length.txt")
