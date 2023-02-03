@@ -12,6 +12,13 @@ def main(config_file, restart):
     config = Config(cparser)
     config.cache_server = get_cache_server(config, restart)
     crawler = Crawler(config, restart)
+    if restart:
+        #delete wordFreq.json & subDomains.json & url.txt
+        open("subDomains.json", "w").close()
+        open("wordFreq.json", "w").close()
+        open("/Logs/urls.txt", "w").close()
+        open("/Logs/page_length.txt", "w").close()
+
     crawler.start()
 
 
