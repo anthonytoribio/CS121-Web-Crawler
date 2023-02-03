@@ -99,7 +99,8 @@ def extract_next_links(url, resp):
         write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length) + " "+ url )
         #print(page_length)
 
-        print(high_info(soup, resp))
+        if not high_info(soup, resp) and page_length < 200:
+            return []
 
 
         prev = get_lines(PAGE_COPY_PATH)
