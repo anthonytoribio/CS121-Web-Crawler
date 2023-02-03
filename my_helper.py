@@ -147,6 +147,13 @@ def load_file(file_name : str):
     with open(file_name, 'r') as file:
         return json.loads(file.read())
 
+def get_lines(file_name : str):
+    l = []
+    with open('text_copy.txt', 'r') as f:
+        for line in f:
+            l.append(line.strip())
+    return l
+
 def isDate(date: str) -> bool:
     #check each format in FMTS if it 'fits' the given date
     for fmt in FMTS:

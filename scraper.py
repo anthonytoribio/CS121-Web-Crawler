@@ -94,6 +94,13 @@ def extract_next_links(url, resp):
         print(f"\n!-------The page: {url} is size: {len(resp.raw_response.content)} bytes----------!\n")
         soup = BeautifulSoup(resp.raw_response.content)
 
+        prev = get_lines(PAGE_COPY_PATH)
+        curr = [string for string in soup.stripped_strings]
+
+        if prev == curr:
+            print("DUPLICATE FOUND")
+            return scrapped_urls
+
         # Copying current webpage to local txt and tokenize/update wordFreq
         copy_page(PAGE_COPY_PATH, [string for string in soup.stripped_strings])
         if not high_info(soup, resp):
