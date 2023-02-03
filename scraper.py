@@ -93,13 +93,15 @@ def extract_next_links(url, resp):
     if resp.status == 200 and resp.raw_response != None and len(resp.raw_response.content) < 1000000:
         print(f"\n!-------The page: {url} is size: {len(resp.raw_response.content)} bytes----------!\n")
         soup = BeautifulSoup(resp.raw_response.content)
+
         anchors = soup.find_all('a')
         #parse the url to get the scheme and domain for later use
         parse = urlparse(url)
         #for each anchor check if its a relative url and if so change to absolute
         for a in anchors:
             hrefLink = a.get('href')
-            if len(hrefLink) > 2:
+
+            if hrefLink != None and len(hrefLink) > 2:
                 if (hrefLink[:2] == "//"):
                     scrapped_urls.append("https:" + hrefLink)
                 elif (hrefLink[0] == "/"):
