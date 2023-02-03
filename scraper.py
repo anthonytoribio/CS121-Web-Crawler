@@ -94,6 +94,15 @@ def extract_next_links(url, resp):
         print(f"\n!-------The page: {url} is size: {len(resp.raw_response.content)} bytes----------!\n")
         soup = BeautifulSoup(resp.raw_response.content)
 
+        page_length = sum([len(string.split()) for string in soup.stripped_strings if string not in punctuation])
+        print([(string.split()) for string in soup.stripped_strings if string not in punctuation])
+        write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length) + " "+ url )
+        #print(page_length)
+
+        if not high_info(soup, resp) and page_length < 200:
+            return []
+
+
         prev = get_lines(PAGE_COPY_PATH)
         curr = [string for string in soup.stripped_strings]
 
@@ -103,9 +112,6 @@ def extract_next_links(url, resp):
 
         # Copying current webpage to local txt and tokenize/update wordFreq
         copy_page(PAGE_COPY_PATH, [string for string in soup.stripped_strings])
-        if not high_info(soup, resp):
-            return scrapped_urls
-
 
         anchors = soup.find_all('a')
         #parse the url to get the scheme and domain for later use
@@ -121,10 +127,6 @@ def extract_next_links(url, resp):
                     scrapped_urls.append(parse.scheme + "://" + parse.netloc + hrefLink)
             else:
                 scrapped_urls.append(a.get('href'))
-
-        page_length = sum([len(string.split()) for string in soup.stripped_strings if string not in punctuation])
-        write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length) + " "+ url )
-        #print(page_length)
 
         file = open(PAGE_COPY_PATH, "rb")
         #token_list = [token[1] for token in tokenize(file.readline) if (token[0] == 1 or token[0] == 2)]
