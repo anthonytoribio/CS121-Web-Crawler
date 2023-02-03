@@ -93,6 +93,12 @@ def extract_next_links(url, resp):
     if resp.status == 200 and resp.raw_response != None and len(resp.raw_response.content) < 1000000:
         print(f"\n!-------The page: {url} is size: {len(resp.raw_response.content)} bytes----------!\n")
         soup = BeautifulSoup(resp.raw_response.content)
+
+        # Copying current webpage to local txt and tokenize/update wordFreq
+        copy_page(PAGE_COPY_PATH, [string for string in soup.stripped_strings])
+        if not high_info(soup, resp):
+            return scrapped_urls
+
         anchors = soup.find_all('a')
         for a in anchors:
             scrapped_urls.append(a.get('href'))
@@ -101,8 +107,6 @@ def extract_next_links(url, resp):
         write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length) + " "+ url )
         #print(page_length)
 
-        # Copying current webpage to local txt and tokenize/update wordFreq
-        copy_page(PAGE_COPY_PATH, [string for string in soup.stripped_strings])
         file = open(PAGE_COPY_PATH, "rb")
         #token_list = [token[1] for token in tokenize(file.readline) if (token[0] == 1 or token[0] == 2)]
         token_list = tokenize(PAGE_COPY_PATH)
