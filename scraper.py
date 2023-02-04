@@ -173,9 +173,12 @@ def is_valid(url):
         if (not domain in VALID_DOMAINS):
             return False
 
+        if (parsed.netloc == "swiki.ics.uci.edu" and "rev" in parsed.query):
+            return False
+
         #Checks the url is legal to be parsed by the robots.txt
         #set the url of the robots.txt and then read 
-        robotParser.set_url(parsed.scheme+"://"+domain+"/robots.txt")
+        robotParser.set_url(parsed.scheme+"://"+parsed.netloc+"/robots.txt")
         robotParser.read()
         
         if (not robotParser.can_fetch("*", url)):
