@@ -178,6 +178,10 @@ def is_valid(url):
         if (parsed.netloc in BLACKLISTED):
             return False
 
+        #Avoid long query params and avoid "rev" "ver" and "precision"
+        if (len(parsed.query) > 250 or "rev" in parsed.query or "ver" in parsed.query or "precision" in parsed.query):
+            return False
+
         #Checks the url is legal to be parsed by the robots.txt
         #set the url of the robots.txt and then read 
         robotParser.set_url(parsed.scheme+"://"+parsed.netloc+"/robots.txt")
