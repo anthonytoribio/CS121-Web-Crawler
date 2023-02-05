@@ -15,6 +15,7 @@ robotParser = robotparser.RobotFileParser()
 VALID_DOMAINS = {"ics.uci.edu", "cs.uci.edu", "informatics.uci.edu",
     "stat.uci.edu"}
 PAGE_COPY_PATH = r"./text_copy.txt"
+BLACKLISTED = ["swiki.ics.uci.edu", "wiki.ics.uci.edu", "gitlab.ics.uci.edu"]
 
 
 wordFreq = Counter()
@@ -135,8 +136,8 @@ def extract_next_links(url, resp):
                     scrapped_urls.append("https:" + hrefLink)
                 elif (hrefLink[0] == "/"):
                     scrapped_urls.append(parse.scheme + "://" + parse.netloc + hrefLink)
-            else:
-                scrapped_urls.append(a.get('href'))
+                else:
+                    scrapped_urls.append(a.get('href'))
 
         file = open(PAGE_COPY_PATH, "rb")
         #token_list = [token[1] for token in tokenize(file.readline) if (token[0] == 1 or token[0] == 2)]
@@ -173,7 +174,8 @@ def is_valid(url):
         if (not domain in VALID_DOMAINS):
             return False
 
-        if (parsed.netloc == "swiki.ics.uci.edu" and "rev" in parsed.query):
+        #avoid blacklisted domains/subdomains
+        if (parsed.netloc in BLACKLISTED):
             return False
 
         #Checks the url is legal to be parsed by the robots.txt
