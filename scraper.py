@@ -21,14 +21,15 @@ BLACKLISTED = ["swiki.ics.uci.edu", "wiki.ics.uci.edu", "gitlab.ics.uci.edu"]
 wordFreq = Counter()
 
 def scraper(url, resp):
+    url = url.lower()
     links = extract_next_links(url, resp)
     validLinks = [link for link in links if is_valid(link)]
     defraggedLinks = [link.split('#', 1)[0] for link in validLinks]
     finalLinks = []
 
     # IMPORTANT : Delete subDomains.json when starting a new crawl if you want accurate subdomain counts
-    for url in defraggedLinks:
-        parsed = urlparse(url)
+    for valid in defraggedLinks:
+        parsed = urlparse(valid)
         netlocList = parsed.netloc.split(".")
 
         #loop through the path and check if any is a date. If it is then dont add to finalLinks
@@ -41,52 +42,32 @@ def scraper(url, resp):
         if (not hasDate):
             finalLinks.append(url)
 
+    parsed = urlparse(url)
+    netlocList = parsed.netloc.split(".")
+    domain = netlocList[-3] + "." + netlocList[-2] + "." + netlocList[-1]
+    trueDomain = parsed.scheme+"://"+parsed.netloc
+    
+    # Subdomain is of ics.uci.edu but it isn't the base url of ics.uci.edu
+    if domain == 'ics.uci.edu' and trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'} and resp.status == 200:
 
-        domain = netlocList[-3] + "." + netlocList[-2] + "." + netlocList[-1]
-        trueDomain = parsed.scheme+"://"+parsed.netloc
-        
-        # Subdomain is of ics.uci.edu but it isn't the base url of ics.uci.edu
-        if domain == 'ics.uci.edu' and trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'}:
+        if os.path.exists('subDomains.json'):
+            
+            domainDict = load_file('subDomains.json')
 
-            if os.path.exists('subDomains.json'):
-                
-                domainDict = load_file('subDomains.json')
-
-                if parsed.netloc in domainDict:
-                    if url not in domainDict[parsed.netloc]['urls']:
-                        domainDict[parsed.netloc]['urls'].append(url)
-                        domainDict[parsed.netloc]['count'] += 1
-
-                        # Debug prints
-                        # print("=========== Dictionary Updated ==============")
-                        # for k,v in domainDict.items():
-                        #     print(k, v)
-                        #     print()
-                        save_file('subDomains.json', domainDict)
-                        
-                else:
-                    domainDict[parsed.netloc] = {'count': 1, 'urls': [url]}
-                    
-                    # Debug prints
-                    # print("=========== Dictionary Updated ==============")
-                    # for k,v in domainDict.items():
-                    #     print(k, v)
-                    #     print()
+            if parsed.netloc in domainDict:
+                if url not in domainDict[parsed.netloc]['urls']:
+                    domainDict[parsed.netloc]['urls'].append(url)
+                    domainDict[parsed.netloc]['count'] += 1
                     save_file('subDomains.json', domainDict)
-                
-
-                
-
+                    
             else:
-                domainDict = dict()
-                domainDict[parsed.netloc] = {'count': 1, 'urls': [url]}    
-
-                # Debug prints
-                print("=========== subDomains.json created with a dictionary with 1 entry ==============")
-                for k,v in domainDict.items():
-                    print(k, v)
-                    print()
+                domainDict[parsed.netloc] = {'count': 1, 'urls': [url]}
                 save_file('subDomains.json', domainDict)
+
+        else:
+            domainDict = dict()
+            domainDict[parsed.netloc] = {'count': 1, 'urls': [url]}    
+            save_file('subDomains.json', domainDict)
             
     return finalLinks
 
@@ -105,14 +86,11 @@ def extract_next_links(url, resp):
     if resp.status == 200 and resp.raw_response != None and len(resp.raw_response.content) < 1000000:
         print(f"\n!-------The page: {url} is size: {len(resp.raw_response.content)} bytes----------!\n")
         soup = BeautifulSoup(resp.raw_response.content)
-
         page_length = sum([len(string.split()) for string in soup.stripped_strings if string not in punctuation])
         write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length) + " "+ url )
-        #print(page_length)
-
-        # if not high_info(soup, resp) and page_length < 200:
-        #     return []
-
+        
+        if not high_info(soup, resp) and page_length < 200:
+            return []
 
         prev = get_lines(PAGE_COPY_PATH)
         curr = [string for string in soup.stripped_strings]
@@ -191,6 +169,7 @@ def is_valid(url):
             print("UNABLE to parse because of robots.txt")
             print("URL AT:", url)
             return False
+
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
