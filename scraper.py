@@ -40,7 +40,7 @@ def scraper(url, resp):
                 hasDate = True
                 break
         if (not hasDate):
-            finalLinks.append(url)
+            finalLinks.append(valid)
 
     parsed = urlparse(url)
     netlocList = parsed.netloc.split(".")
