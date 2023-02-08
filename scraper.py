@@ -157,7 +157,7 @@ def is_valid(url):
             return False
 
         #Avoid long query params and avoid "rev" "ver" and "precision"
-        if (len(parsed.query) > 250 or "rev" in parsed.query or "ver" in parsed.query or "precision" in parsed.query):
+        if (len(parsed.query) > 250 or "rev" in parsed.query or "ver" in parsed.query or "precision" in parsed.query or "share" in parsed.query):
             return False
 
         #Checks the url is legal to be parsed by the robots.txt
