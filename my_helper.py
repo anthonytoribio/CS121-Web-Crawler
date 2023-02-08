@@ -200,6 +200,8 @@ def calculate_given_quantile(filepath, quantile):
 def high_info(soup, resp) -> bool: # checks if page has high info or not
     page_size = len(soup.prettify())
     body = soup.body
+    if body == None:
+        return False
     body = ''.join([string for string in body.stripped_strings])
     ratio = (len(body) / page_size) * 100
     print(ratio)

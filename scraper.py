@@ -89,7 +89,7 @@ def extract_next_links(url, resp):
         page_length = sum([len(string.split()) for string in soup.stripped_strings if string not in punctuation])
         write_to_end( os.path.dirname(__file__) + "/Logs/page_length.txt", str(page_length) + " "+ url )
         
-        if not high_info(soup, resp) and page_length < 200:
+        if not high_info(soup, resp) and page_length < 150:
             return []
 
         prev = get_lines(PAGE_COPY_PATH)
@@ -162,13 +162,13 @@ def is_valid(url):
 
         #Checks the url is legal to be parsed by the robots.txt
         #set the url of the robots.txt and then read 
-        robotParser.set_url(parsed.scheme+"://"+parsed.netloc+"/robots.txt")
-        robotParser.read()
+        #robotParser.set_url(parsed.scheme+"://"+parsed.netloc+"/robots.txt")
+        #robotParser.read()
         
-        if (not robotParser.can_fetch("*", url)):
-            print("UNABLE to parse because of robots.txt")
-            print("URL AT:", url)
-            return False
+        #if (not robotParser.can_fetch("*", url)):
+            #print("UNABLE to parse because of robots.txt")
+            #print("URL AT:", url)
+            #return False
 
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
