@@ -28,7 +28,6 @@ def scraper(url, resp):
     defraggedLinks = [link.split('#', 1)[0] for link in validLinks]
     finalLinks = []
 
-    # IMPORTANT : Delete subDomains.json when starting a new crawl if you want accurate subdomain counts
     for valid in defraggedLinks:
         parsed = urlparse(valid)
         netlocList = parsed.netloc.split(".")
@@ -49,6 +48,7 @@ def scraper(url, resp):
     trueDomain = parsed.scheme+"://"+parsed.netloc
     
     # Subdomain is of ics.uci.edu but it isn't the base url of ics.uci.edu
+    # domainDict : a running dict on subdomains stored in subDomains.json
     if domain == 'ics.uci.edu' and trueDomain not in {'https://www.ics.uci.edu','http://www.ics.uci.edu'} and resp.status == 200:
 
         if os.path.exists('subDomains.json'):
@@ -119,10 +119,9 @@ def extract_next_links(url, resp):
                     scrapped_urls.append(a.get('href'))
 
         file = open(PAGE_COPY_PATH, "rb")
-        #token_list = [token[1] for token in tokenize(file.readline) if (token[0] == 1 or token[0] == 2)]
         token_list = tokenize(PAGE_COPY_PATH)
 
-        # IMPORTANT: Delete wordFreq.json when starting from the beginning for accurate tracking
+        # wordFreq : a running counter on word frequencies stored in wordFreq.json
         global wordFreq
         if len(wordFreq) == 0 and os.path.exists('wordFreq.json'):
             wordFreq = load_file('wordFreq.json')
