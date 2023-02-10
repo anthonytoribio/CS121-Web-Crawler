@@ -1,4 +1,5 @@
 import re
+import urllib
 from urllib.parse import urlparse
 from urllib import robotparser
 from bs4 import BeautifulSoup
@@ -183,3 +184,9 @@ def is_valid(url):
     except TypeError:
         print ("TypeError for ", parsed)
         raise
+    except ValueError:
+        print("url set is invalid")
+        return False
+    except urllib.error.URLError:
+        print("url was unable to be fetched and read")
+        return False
